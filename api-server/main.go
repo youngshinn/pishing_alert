@@ -17,10 +17,9 @@ import (
 var db *sql.DB
 
 func main() {
-
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(" .env 파일을 불러올 수 없습니다:", err)
+	// 개발 환경에서는 .env 파일 사용
+	if os.Getenv("ENV") != "prod" {
+		_ = godotenv.Load(".env") // 실패해도 무시
 	}
 
 	// 환경변수 로드
@@ -34,6 +33,7 @@ func main() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	// DB 연결
+	var err error
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(" DB 연결 실패:", err)
