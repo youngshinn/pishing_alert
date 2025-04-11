@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api-server
-          image: shin1031/phishing-api-server:dev-022b260
+          image: shin1031/phishing-api-server:dev-fixed
           ports:
             - containerPort: 8080
           envFrom:
