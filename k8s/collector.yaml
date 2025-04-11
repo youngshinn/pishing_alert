@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: phishing-collector
+spec:
+  schedule: "0 * * * *"  # 매 시간 정각마다 실행
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: collector
+              image: shin1031/phishing-collector:latest
+              envFrom:
+                - secretRef:
+                    name: db-secret
+          restartPolicy: OnFailure

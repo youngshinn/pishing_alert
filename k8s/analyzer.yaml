@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phishing-analyzer
+  labels:
+    app: phishing-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phishing-analyzer
+  template:
+    metadata:
+      labels:
+        app: phishing-analyzer
+    spec:
+      containers:
+        - name: analyzer
+          image: shin1031/phishing-analyzer:latest
+          ports:
+            - containerPort: 5001
+          envFrom:
+            - secretRef:
+                name: db-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phishing-analyzer
+spec:
+  selector:
+    app: phishing-analyzer
+  ports:
+    - port: 5001
+      targetPort: 5001
+  type: ClusterIP
