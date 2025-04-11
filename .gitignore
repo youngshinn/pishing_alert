@@ -1,2 +1,3 @@
 /collector/.env
 /api-server/.env
+/k8s/db-secret.yaml
