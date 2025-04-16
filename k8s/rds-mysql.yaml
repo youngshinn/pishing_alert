@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rds-mysql
+  namespace: monitoring
+spec:
+  type: ExternalName
+  externalName: your-rds-endpoint.ap-northeast-2.rds.amazonaws.com
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-client
+  namespace: default
+  labels:
+    app: mysql-client
+spec:
+  containers:
+    - name: mysql-client
+      image: mysql:8.0
+      command: ["sleep"]
+      args: ["3600"]  # 1시간 동안 유지
+      env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_HOST
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+      tty: true
+  restartPolicy: Never
