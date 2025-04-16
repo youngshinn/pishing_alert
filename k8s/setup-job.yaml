@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: setup
+          image: shin1031/phishing-setup:dev-1f19a2f
+          envFrom:
+            - secretRef:
+                name: rds-secret
+      restartPolicy: OnFailure

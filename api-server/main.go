@@ -81,7 +81,8 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 피싱 URL DB 조회
 	var isPhishing bool
-	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM phishing_urls WHERE url = ?)", inputURL).Scan(&isPhishing)
+	normalizedURL := normalizeURL(inputURL)
+	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM phishing_urls WHERE url = ?)", normalizedURL).Scan(&isPhishing)
 	if err != nil {
 		http.Error(w, "DB 조회 실패: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -148,4 +149,13 @@ func getIP(r *http.Request) string {
 		return r.RemoteAddr // fallback
 	}
 	return ip
+}
+
+func normalizeURL(u string) string {
+	parsed, err := url.Parse(u)
+	if err != nil {
+		return u // 파싱 실패 시 원본 반환
+	}
+	// Path나 쿼리까지 비교하려면 그대로 유지
+	return fmt.Sprintf("%s://%s%s", parsed.Scheme, parsed.Host, parsed.Path)
 }

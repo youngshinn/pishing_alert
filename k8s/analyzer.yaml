@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: analyzer
-          image: shin1031/phishing-analyzer:latest
+          image: shin1031/phishing-analyzer:dev-1f19a2f
           ports:
             - containerPort: 5001
           envFrom:
             - secretRef:
-                name: db-secret
+                name: rds-secret
 ---
 apiVersion: v1
 kind: Service

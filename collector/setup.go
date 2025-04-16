@@ -14,7 +14,7 @@ import (
 func main() {
 	// .env 파일 로드
 	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(" .env 파일 로드 실패:", err)
+		log.Println(".env 파일 로드 실패 (무시):", err)
 	}
 
 	// 환경 변수 로딩
