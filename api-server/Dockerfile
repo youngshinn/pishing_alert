@@ -19,5 +19,5 @@ COPY --from=builder /app/server .
 # 실행 권한 부여
 RUN chmod +x /app/server
 
-EXPOSE 8080
+EXPOSE 8081
 CMD ["./server"]
