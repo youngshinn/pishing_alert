@@ -7,6 +7,6 @@ spec:
     app: {{ .Chart.Name }}
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: {{ .Values.service.port }}
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.container.port }}  # ← 이 부분 중요
   type: {{ .Values.service.type }}

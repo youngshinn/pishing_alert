@@ -49,14 +49,22 @@ func main() {
 func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 	inputURL := r.URL.Query().Get("url")
 	if inputURL == "" {
-		http.Error(w, "url 파라미터가 필요합니다", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, map[string]interface{}{
+			"success": false,
+			"message": "url 파라미터가 필요합니다",
+		})
 		return
 	}
 
 	// URL 파싱 → 도메인 추출
 	parsed, err := url.Parse(inputURL)
 	if err != nil {
-		http.Error(w, "URL 파싱 실패: "+err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, map[string]interface{}{
+			"success": false,
+			"message": "URL 파싱 실패: " + err.Error(),
+		})
 		return
 	}
 	domain := parsed.Hostname()
@@ -65,7 +73,11 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 	var safe bool
 	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM safe_urls WHERE url = ?)", domain).Scan(&safe)
 	if err != nil {
-		http.Error(w, "화이트리스트 확인 실패: "+err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, map[string]interface{}{
+			"success": false,
+			"message": "화이트리스트 확인 실패: " + err.Error(),
+		})
 		return
 	}
 	if safe {
@@ -84,17 +96,21 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 	normalizedURL := normalizeURL(inputURL)
 	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM phishing_urls WHERE url = ?)", normalizedURL).Scan(&isPhishing)
 	if err != nil {
-		http.Error(w, "DB 조회 실패: "+err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, map[string]interface{}{
+			"success": false,
+			"message": "DB 조회 실패: " + err.Error(),
+		})
 		return
 	}
 
-	//  WHOIS 분석기 호출
+	// WHOIS 분석기 호출
 	whoisResult, err := AnalyzeDomain(domain)
 	if err != nil {
 		log.Println("WHOIS 분석 실패:", err)
 		whoisResult = map[string]interface{}{"error": err.Error()}
 	} else {
-		//  WHOIS 로그 저장
+		// WHOIS 로그 저장
 		_, err = db.Exec(`
 			INSERT INTO whois_logs (domain, registrar, creation_date, expiration_date, is_suspicious)
 			VALUES (?, ?, ?, ?, ?)`,
@@ -109,7 +125,7 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// 5 요청 로그 저장
+	// 요청 로그 저장
 	_, err = db.Exec(
 		"INSERT INTO request_logs (url, domain, is_phishing, user_ip) VALUES (?, ?, ?, ?)",
 		inputURL, domain, isPhishing, r.RemoteAddr,
@@ -118,7 +134,7 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("로그 저장 실패:", err)
 	}
 
-	//  응답 전송
+	// 응답 전송
 	resp := map[string]interface{}{
 		"isPhishing": isPhishing,
 		"whois":      whoisResult,
