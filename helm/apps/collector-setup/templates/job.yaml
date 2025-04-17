@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: collector-setup
+spec:
+  template:
+    spec:
+      containers:
+        - name: setup
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env: {{ toYaml .Values.env | nindent 12 }}
+      restartPolicy: Never
+  backoffLimit: 1

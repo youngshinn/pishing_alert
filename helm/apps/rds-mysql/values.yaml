@@ -1,0 +1,22 @@
+rds:
+  externalName: your-rds-endpoint.ap-northeast-2.rds.amazonaws.com
+
+mysqlClient:
+  enabled: true
+  image: mysql:8.0
+  sleepSeconds: 3600
+  env:
+    - name: DB_HOST
+      secretKeyRef:
+        name: db-secret
+        key: DB_HOST
+    - name: DB_USER
+      secretKeyRef:
+        name: db-secret
+        key: DB_USER
+    - name: DB_PASSWORD
+      secretKeyRef:
+        name: db-secret
+        key: DB_PASSWORD
+ingress:
+  enabled: false

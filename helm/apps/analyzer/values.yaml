@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: 590183940165.dkr.ecr.ap-northeast-2.amazonaws.com/phishing-analyze
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5001
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: []
+
+ingress:
+  enabled: false

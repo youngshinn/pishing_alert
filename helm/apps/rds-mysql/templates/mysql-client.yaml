@@ -1,0 +1,25 @@
+{{- if .Values.mysqlClient.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-client
+  namespace: default
+  labels:
+    app: mysql-client
+spec:
+  containers:
+    - name: mysql-client
+      image: {{ .Values.mysqlClient.image }}
+      command: ["sleep"]
+      args: ["{{ .Values.mysqlClient.sleepSeconds }}"]
+      env:
+        {{- range .Values.mysqlClient.env }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .secretKeyRef.name }}
+              key: {{ .secretKeyRef.key }}
+        {{- end }}
+      tty: true
+  restartPolicy: Never
+{{- end }}

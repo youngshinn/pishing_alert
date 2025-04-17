@@ -38,4 +38,4 @@ spec:
               name: db-secret
               key: DB_PASSWORD
       tty: true
-  restartPolicy: Never
+  restartPolicy: Always

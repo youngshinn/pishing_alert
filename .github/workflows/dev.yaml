@@ -37,7 +37,7 @@ jobs:
       id: vars
       run: echo "tag=dev-$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-    # 🧪 analyzer
+    #  analyzer
     - name: Build and Push analyzer
       uses: docker/build-push-action@v5
       with:
@@ -48,7 +48,7 @@ jobs:
           ${{ env.ECR_REGISTRY }}/phishing-analyze:${{ steps.vars.outputs.tag }}
           ${{ env.ECR_REGISTRY }}/phishing-analyze:latest
 
-    # 🔐 api-server
+    #  api-server
     - name: Build and Push api-server
       uses: docker/build-push-action@v5
       with:
@@ -59,7 +59,7 @@ jobs:
           ${{ env.ECR_REGISTRY }}/phishing-api-server:${{ steps.vars.outputs.tag }}
           ${{ env.ECR_REGISTRY }}/phishing-api-server:latest
 
-    # 🕵️‍♂️ collector - main.go (CronJob)
+    #  collector - main.go (CronJob)
     - name: Build and Push collector-main
       uses: docker/build-push-action@v5
       with:
@@ -70,7 +70,7 @@ jobs:
           ${{ env.ECR_REGISTRY }}/phishing-collector-main:${{ steps.vars.outputs.tag }}
           ${{ env.ECR_REGISTRY }}/phishing-collector-main:latest
 
-    # ⚙️ collector - setup.go (Job)
+    # collector - setup.go (Job)
     - name: Build and Push collector-setup
       uses: docker/build-push-action@v5
       with:
