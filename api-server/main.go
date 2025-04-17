@@ -42,8 +42,8 @@ func main() {
 
 	http.HandleFunc("/api/check-url", checkURLHandler)
 
-	log.Println("API 서버 시작: http://0.0.0.0:8080")
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
+	log.Println("API 서버 시작: http://0.0.0.0:8081")
+	log.Fatal(http.ListenAndServe("0.0.0.0:8081", nil))
 }
 
 func checkURLHandler(w http.ResponseWriter, r *http.Request) {
