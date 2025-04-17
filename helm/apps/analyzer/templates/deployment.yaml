@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "analyzer.fullname" . }}
+  labels:
+    app: {{ include "analyzer.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "analyzer.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "analyzer.name" . }}
+    spec:
+      containers:
+        - name: analyzer
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}

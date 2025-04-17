@@ -5,10 +5,12 @@
     "description": "의심스러운 사이트 접속 시 경고 알림 제공",
     "permissions": [
       "tabs",
-      "scripting"
+      "scripting",
+      "webRequest"
     ],
     "host_permissions": [
-      "<all_urls>"
+      "<all_urls>",
+      "http://*.ap-northeast-2.elb.amazonaws.com/*"
     ],
     "background": {
       "service_worker": "background.js"

@@ -15,7 +15,7 @@ import (
 func main() {
 	//  MySQL 연결 설정
 	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(".env 파일 로드 실패:", err)
+		log.Println(".env 파일 로드 실패 (무시):", err)
 	}
 
 	// 환경 변수로부터 DB 정보 로드

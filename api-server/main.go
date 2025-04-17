@@ -17,10 +17,9 @@ import (
 var db *sql.DB
 
 func main() {
-
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(" .env 파일을 불러올 수 없습니다:", err)
+	// 개발 환경에서는 .env 파일 사용
+	if os.Getenv("ENV") != "prod" {
+		_ = godotenv.Load(".env") // 실패해도 무시
 	}
 
 	// 환경변수 로드
@@ -34,6 +33,7 @@ func main() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	// DB 연결
+	var err error
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(" DB 연결 실패:", err)
@@ -81,7 +81,8 @@ func checkURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 피싱 URL DB 조회
 	var isPhishing bool
-	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM phishing_urls WHERE url = ?)", inputURL).Scan(&isPhishing)
+	normalizedURL := normalizeURL(inputURL)
+	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM phishing_urls WHERE url = ?)", normalizedURL).Scan(&isPhishing)
 	if err != nil {
 		http.Error(w, "DB 조회 실패: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -148,4 +149,13 @@ func getIP(r *http.Request) string {
 		return r.RemoteAddr // fallback
 	}
 	return ip
+}
+
+func normalizeURL(u string) string {
+	parsed, err := url.Parse(u)
+	if err != nil {
+		return u // 파싱 실패 시 원본 반환
+	}
+	// Path나 쿼리까지 비교하려면 그대로 유지
+	return fmt.Sprintf("%s://%s%s", parsed.Scheme, parsed.Host, parsed.Path)
 }

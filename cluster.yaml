@@ -1,0 +1,22 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: alert-cluster
+  region: ap-northeast-2
+
+vpc:
+  cidr: "10.0.0.0/16"
+
+nodeGroups:
+  - name: alert-nodes
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 3
+    ssh:
+      allow: true
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        cloudWatch: true

@@ -8,7 +8,7 @@ import (
 )
 
 func AnalyzeDomain(domain string) (map[string]interface{}, error) {
-	url := fmt.Sprintf("http://localhost:5001/analyze?domain=%s", domain)
+	url := fmt.Sprintf("http://phishing-analyzer:5001/analyze?domain=%s", domain)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err

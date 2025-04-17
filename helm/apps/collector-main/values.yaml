@@ -1,0 +1,24 @@
+image:
+  repository: 590183940165.dkr.ecr.ap-northeast-2.amazonaws.com/phishing-collector-main
+  tag: latest
+  pullPolicy: IfNotPresent
+
+schedule: "* 6 * * *" 
+env:
+  - name: DB_HOST
+    valueFrom:
+      secretKeyRef:
+        name: db-secret
+        key: DB_HOST
+  - name: DB_USER
+    valueFrom:
+      secretKeyRef:
+        name: db-secret
+        key: DB_USER
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: db-secret
+        key: DB_PASSWORD
+ingress:
+  enabled: false

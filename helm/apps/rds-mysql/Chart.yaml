@@ -1,0 +1,4 @@
+apiVersion: v2
+name: rds-mysql
+description: RDS MySQL external service and mysql-client pod
+version: 0.1.0
